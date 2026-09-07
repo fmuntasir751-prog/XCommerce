@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Order History | XCommerce{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <h1 class="fw-bold mb-4">My Orders</h1>
+
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order-history-card">
+                <div class="d-flex justify-content-between flex-wrap">
+                    <div>
+                        <h4 class="fw-bold">
+                            Order #{{ order.id }}
+                        </h4>
+
+                        <p class="text-secondary">
+                            {{ order.created_at|date:"F d, Y - H:i" }}
+                        </p>
+                    </div>
+
+                    <div class="text-end">
+                        <span class="badge bg-warning text-dark">
+                            {{ order.get_status_display }}
+                        </span>
+
+                        <p class="fw-bold fs-5 mt-2">
+                            ¥{{ order.total_price }}
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                {% for item in order.items.all %}
+                    <div class="d-flex justify-content-between">
+                        <span>
+                            {{ item.product_name }} × {{ item.quantity }}
+                        </span>
+
+                        <span>
+                            ¥{{ item.get_total_price }}
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-cart text-center">
+            <h2>You have no orders yet</h2>
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="btn btn-warning mt-3"
+            >
+                Start Shopping
+            </a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

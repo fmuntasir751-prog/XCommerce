@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}My Wishlist | XCommerce{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <h1 class="fw-bold mb-4">My Wishlist</h1>
+
+    {% if wishlist_items %}
+        <div class="row g-4">
+            {% for item in wishlist_items %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="product-card">
+                        <a href="{{ item.product.get_absolute_url }}">
+                            {% if item.product.image %}
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                    class="product-image"
+                                >
+                            {% else %}
+                                <div class="product-placeholder">
+                                    📦
+                                </div>
+                            {% endif %}
+                        </a>
+
+                        <div class="product-card-body">
+                            <p class="product-category">
+                                {{ item.product.category.name }}
+                            </p>
+
+                            <h3 class="product-name">
+                                <a href="{{ item.product.get_absolute_url }}">
+                                    {{ item.product.name }}
+                                </a>
+                            </h3>
+
+                            <div class="product-price mb-3">
+                                {% if item.product.discount_price %}
+                                    <span class="current-price">
+                                        ¥{{ item.product.discount_price }}
+                                    </span>
+
+                                    <span class="old-price">
+                                        ¥{{ item.product.price }}
+                                    </span>
+                                {% else %}
+                                    <span class="current-price">
+                                        ¥{{ item.product.price }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <a
+                                href="{{ item.product.get_absolute_url }}"
+                                class="btn btn-dark w-100"
+                            >
+                                View Product
+                            </a>
+
+                            <form
+                                method="post"
+                                action="{% url 'wishlist:wishlist_toggle' item.product.id %}"
+                                class="mt-2"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-danger w-100"
+                                >
+                                    Remove from Wishlist
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-cart text-center">
+            <div class="empty-cart-icon">♡</div>
+
+            <h2>Your wishlist is empty</h2>
+
+            <p class="text-secondary">
+                Save products that you would like to buy later.
+            </p>
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="btn btn-warning btn-lg"
+            >
+                Browse Products
+            </a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

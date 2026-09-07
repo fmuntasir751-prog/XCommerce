@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | XCommerce{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {% if profile.avatar %}
+                <img
+                    src="{{ profile.avatar.url }}"
+                    alt="{{ user.username }}"
+                >
+            {% else %}
+                <span>
+                    {{ user.first_name|first|default:user.username|first|upper }}
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="flex-grow-1">
+            <h1 class="fw-bold mb-1">
+                {{ user.get_full_name|default:user.username }}
+            </h1>
+
+            <p class="text-secondary mb-2">
+                {{ user.email }}
+            </p>
+
+            <a
+                href="{% url 'accounts:profile_edit' %}"
+                class="btn btn-warning"
+            >
+                Edit Profile
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <div class="profile-stat-card">
+                <h2>{{ order_count }}</h2>
+                <p>Total Orders</p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="profile-stat-card">
+                <h2>{{ wishlist_count }}</h2>
+                <p>Wishlist Items</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-info-card mt-4">
+        <h3 class="fw-bold mb-4">Contact Information</h3>
+
+        <p>
+            <strong>Phone:</strong>
+            {{ profile.phone|default:"Not provided" }}
+        </p>
+
+        <p>
+            <strong>Postal code:</strong>
+            {{ profile.postal_code|default:"Not provided" }}
+        </p>
+
+        <p>
+            <strong>City:</strong>
+            {{ profile.city|default:"Not provided" }}
+        </p>
+
+        <p>
+            <strong>Address:</strong>
+            {{ profile.address|default:"Not provided" }}
+        </p>
+    </div>
+
+    <div class="profile-info-card mt-4">
+        <div class="d-flex justify-content-between">
+            <h3 class="fw-bold">Recent Orders</h3>
+
+            <a href="{% url 'orders:order_history' %}">
+                View all
+            </a>
+        </div>
+
+        <hr>
+
+        {% for order in recent_orders %}
+            <div class="d-flex justify-content-between mb-3">
+                <div>
+                    <strong>Order #{{ order.id }}</strong>
+
+                    <div class="text-secondary">
+                        {{ order.created_at|date:"F d, Y" }}
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <span class="badge bg-warning text-dark">
+                        {{ order.get_status_display }}
+                    </span>
+
+                    <div class="fw-bold">
+                        ¥{{ order.total_price }}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-secondary mb-0">
+                You have no orders yet.
+            </p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

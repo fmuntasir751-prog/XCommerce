@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Products | XCommerce{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row">
+        <aside class="col-lg-3 mb-4">
+            <div class="filter-box">
+                <h4 class="fw-bold mb-3">Categories</h4>
+
+                <a
+                    href="{% url 'products:product_list' %}"
+                    class="category-filter-link"
+                >
+                    All Products
+                </a>
+
+                {% for category in categories %}
+                    <a
+                        href="{% url 'products:category_products' category.slug %}"
+                        class="category-filter-link"
+                    >
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="fw-bold">
+                        {% if selected_category %}
+                            {{ selected_category.name }}
+                        {% elif query %}
+                            Results for “{{ query }}”
+                        {% else %}
+                            All Products
+                        {% endif %}
+                    </h1>
+
+                    <p class="text-secondary mb-0">
+                        {{ products|length }} product{{ products|length|pluralize }}
+                        found
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                {% for product in products %}
+                    <div class="col-md-6 col-xl-4">
+                        <div class="product-card">
+                            <a href="{{ product.get_absolute_url }}">
+                                {% if product.image %}
+                                    <img
+                                        src="{{ product.image.url }}"
+                                        alt="{{ product.name }}"
+                                        class="product-image"
+                                    >
+                                {% else %}
+                                    <div class="product-placeholder">
+                                        📦
+                                    </div>
+                                {% endif %}
+                            </a>
+
+                            <div class="product-card-body">
+                                <p class="product-category">
+                                    {{ product.category.name }}
+                                </p>
+
+                                <h3 class="product-name">
+                                    <a href="{{ product.get_absolute_url }}">
+                                        {{ product.name }}
+                                    </a>
+                                </h3>
+                                 <div class="product-card-rating">
+    <span>★</span>
+
+    {% if product.average_rating %}
+        {{ product.average_rating|floatformat:1 }}/5
+    {% else %}
+        No reviews
+    {% endif %}
+</div>
+                                <div class="product-price">
+                                    {% if product.discount_price %}
+                                        <span class="current-price">
+                                            ¥{{ product.discount_price }}
+                                        </span>
+
+                                        <span class="old-price">
+                                            ¥{{ product.price }}
+                                        </span>
+                                    {% else %}
+                                        <span class="current-price">
+                                            ¥{{ product.price }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                {% if product.stock > 0 %}
+                                    <span class="stock-available">In stock</span>
+                                {% else %}
+                                    <span class="stock-unavailable">
+                                        Out of stock
+                                    </span>
+                                {% endif %}
+
+                                <a
+                                    href="{{ product.get_absolute_url }}"
+                                    class="btn btn-dark w-100 mt-3"
+                                >
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-warning">
+                            No products were found.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

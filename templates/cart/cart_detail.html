@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart | XCommerce{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <h1 class="fw-bold mb-4">Shopping Cart</h1>
+
+    {% if cart|length > 0 %}
+        <div class="row g-4">
+            <div class="col-lg-8">
+                {% for item in cart %}
+                    {% with product=item.product %}
+                        <div class="cart-item">
+                            <div class="cart-item-image">
+                                {% if product.image %}
+                                    <img
+                                        src="{{ product.image.url }}"
+                                        alt="{{ product.name }}"
+                                    >
+                                {% else %}
+                                    <div class="cart-placeholder">
+                                        📦
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="cart-item-details">
+                                <h4>
+                                    <a href="{{ product.get_absolute_url }}">
+                                        {{ product.name }}
+                                    </a>
+                                </h4>
+
+                                <p class="text-secondary">
+                                    {{ product.category.name }}
+                                </p>
+
+                                <p class="current-price">
+                                    ¥{{ item.price }}
+                                </p>
+
+                                <form
+                                    method="post"
+                                    action="{% url 'cart:cart_update' product.id %}"
+                                    class="d-flex align-items-center gap-2"
+                                >
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="number"
+                                        name="quantity"
+                                        value="{{ item.quantity }}"
+                                        min="1"
+                                        max="{{ product.stock }}"
+                                        class="form-control quantity-input"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-outline-dark"
+                                    >
+                                        Update
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="cart-item-actions">
+                                <p class="fw-bold fs-5">
+                                    ¥{{ item.total_price }}
+                                </p>
+
+                                <form
+                                    method="post"
+                                    action="{% url 'cart:cart_remove' product.id %}"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-outline-danger"
+                                    >
+                                        Remove
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-4">
+                <div class="order-summary">
+                    <h3 class="fw-bold">Order Summary</h3>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Items</span>
+                        <span>{{ cart|length }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <span>Shipping</span>
+                        <span>Calculated at checkout</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between fs-4 fw-bold">
+                        <span>Total</span>
+                        <span>¥{{ cart.get_total_price }}</span>
+                    </div>
+
+                    <a
+    href="{% url 'orders:checkout' %}"
+    class="btn btn-warning btn-lg w-100 mt-4"
+>
+    Proceed to Checkout
+</a>
+
+                    <a
+                        href="{% url 'products:product_list' %}"
+                        class="btn btn-outline-dark w-100 mt-2"
+                    >
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart text-center">
+            <div class="empty-cart-icon">🛒</div>
+
+            <h2>Your cart is empty</h2>
+
+            <p class="text-secondary">
+                Add some products to start shopping.
+            </p>
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="btn btn-warning btn-lg"
+            >
+                Browse Products
+            </a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

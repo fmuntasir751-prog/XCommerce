@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} | XCommerce{% endblock %}
+
+{% block content %}
+
+<!-- Product Information -->
+<section class="container py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-lg-6">
+            {% if product.image %}
+                <img
+                    src="{{ product.image.url }}"
+                    alt="{{ product.name }}"
+                    class="detail-product-image"
+                >
+            {% else %}
+                <div class="detail-product-placeholder">
+                    📦
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-6">
+            <p class="product-category">
+                {{ product.category.name }}
+            </p>
+
+            <h1 class="display-5 fw-bold">
+                {{ product.name }}
+            </h1>
+
+            <!-- Rating Summary -->
+            <div class="rating-summary mt-3">
+                <span class="rating-stars">★★★★★</span>
+
+                <strong>
+                    {{ average_rating|floatformat:1 }}/5
+                </strong>
+
+                <span class="text-secondary">
+                    ({{ review_count }}
+                    review{{ review_count|pluralize }})
+                </span>
+            </div>
+
+            <!-- Price -->
+            <div class="product-price my-4">
+                {% if product.discount_price %}
+                    <span class="current-price fs-2">
+                        ¥{{ product.discount_price }}
+                    </span>
+
+                    <span class="old-price fs-5">
+                        ¥{{ product.price }}
+                    </span>
+                {% else %}
+                    <span class="current-price fs-2">
+                        ¥{{ product.price }}
+                    </span>
+                {% endif %}
+            </div>
+
+            <p class="lead">
+                {{ product.description }}
+            </p>
+
+            <!-- Stock -->
+            <p>
+                {% if product.stock > 0 %}
+                    <span class="stock-available">
+                        In stock: {{ product.stock }}
+                    </span>
+                {% else %}
+                    <span class="stock-unavailable">
+                        Out of stock
+                    </span>
+                {% endif %}
+            </p>
+
+            <!-- Add to Cart -->
+            <form
+                method="post"
+                action="{% url 'cart:cart_add' product.id %}"
+                class="d-flex gap-2 align-items-center mt-4"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="number"
+                    name="quantity"
+                    value="1"
+                    min="1"
+                    max="{{ product.stock }}"
+                    class="form-control quantity-input"
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-warning btn-lg"
+                    {% if product.stock == 0 %}disabled{% endif %}
+                >
+                    Add to Cart
+                </button>
+            </form>
+
+            <!-- Wishlist -->
+            <form
+                method="post"
+                action="{% url 'wishlist:wishlist_toggle' product.id %}"
+                class="mt-3"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="next"
+                    value="{{ request.path }}"
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-outline-dark btn-lg"
+                >
+                    ♡ Add or Remove Wishlist
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+<!-- Review Section -->
+<section class="product-reviews-section py-5">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- Review Form -->
+            <div class="col-lg-5">
+                <div class="review-form-box">
+                    <h2 class="fw-bold">
+                        {% if user_review %}
+                            Update Your Review
+                        {% else %}
+                            Write a Review
+                        {% endif %}
+                    </h2>
+
+                    {% if user.is_authenticated %}
+                        <form
+                            method="post"
+                            action="{% url 'products:add_review' product.id %}"
+                            class="review-form mt-4"
+                        >
+                            {% csrf_token %}
+
+                            {% for field in review_form %}
+                                <div class="mb-3">
+                                    <label
+                                        for="{{ field.id_for_label }}"
+                                        class="form-label fw-bold"
+                                    >
+                                        {{ field.label }}
+                                    </label>
+
+                                    {{ field }}
+
+                                    {% for error in field.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-warning w-100"
+                            >
+                                {% if user_review %}
+                                    Update Review
+                                {% else %}
+                                    Submit Review
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% else %}
+                        <p class="text-secondary mt-3">
+                            You must login before writing a review.
+                        </p>
+
+                        <a
+                            href="{% url 'accounts:login' %}?next={{ request.path }}"
+                            class="btn btn-warning"
+                        >
+                            Login to Review
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="col-lg-7">
+                <div class="reviews-list-box">
+                    <div class="d-flex justify-content-between">
+                        <h2 class="fw-bold">
+                            Customer Reviews
+                        </h2>
+
+                        <strong>
+                            {{ average_rating|floatformat:1 }}/5
+                        </strong>
+                    </div>
+
+                    <hr>
+
+                    {% for review in reviews %}
+                        <div class="review-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>
+                                        {% if review.user.get_full_name %}
+                                            {{ review.user.get_full_name }}
+                                        {% else %}
+                                            {{ review.user.username }}
+                                        {% endif %}
+                                    </strong>
+
+                                    <div class="rating-stars">
+                                        {{ review.rating }}/5 ★
+                                    </div>
+                                </div>
+
+                                <span class="text-secondary small">
+                                    {{ review.updated_at|date:"M d, Y" }}
+                                </span>
+                            </div>
+
+                            <p class="mt-3 mb-0">
+                                {{ review.comment }}
+                            </p>
+                        </div>
+                    {% empty %}
+                        <p class="text-secondary">
+                            No reviews yet. Be the first to
+                            review this product.
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Related Products -->
+{% if related_products %}
+<section class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            Related Products
+        </h2>
+
+        <a
+            href="{% url 'products:category_products' product.category.slug %}"
+            class="view-all-link"
+        >
+            View category →
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for related_product in related_products %}
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <a href="{{ related_product.get_absolute_url }}">
+                        {% if related_product.image %}
+                            <img
+                                src="{{ related_product.image.url }}"
+                                alt="{{ related_product.name }}"
+                                class="product-image"
+                            >
+                        {% else %}
+                            <div class="product-placeholder">
+                                📦
+                            </div>
+                        {% endif %}
+                    </a>
+
+                    <div class="product-card-body">
+                        <p class="product-category">
+                            {{ related_product.category.name }}
+                        </p>
+
+                        <h3 class="product-name">
+                            <a href="{{ related_product.get_absolute_url }}">
+                                {{ related_product.name }}
+                            </a>
+                        </h3>
+
+                        <div class="product-price">
+                            {% if related_product.discount_price %}
+                                <span class="current-price">
+                                    ¥{{ related_product.discount_price }}
+                                </span>
+
+                                <span class="old-price">
+                                    ¥{{ related_product.price }}
+                                </span>
+                            {% else %}
+                                <span class="current-price">
+                                    ¥{{ related_product.price }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <a
+                            href="{{ related_product.get_absolute_url }}"
+                            class="btn btn-dark w-100 mt-3"
+                        >
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
