@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Invalid Activation Link | XCommerce{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-card text-center">
+        <h1 class="fw-bold">Invalid Activation Link</h1>
+
+        <p class="text-secondary">
+            This activation link is invalid or has already been used.
+        </p>
+
+        <a
+            href="{% url 'accounts:register' %}"
+            class="btn btn-warning"
+        >
+            Register Again
+        </a>
+    </div>
+</section>
+{% endblock %}

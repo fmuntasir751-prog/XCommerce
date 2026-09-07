@@ -78,4 +78,15 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+    path(
+    "activation-sent/",
+    views.activation_sent,
+    name="activation_sent",
+),
+
+path(
+    "activate/<uidb64>/<token>/",
+    views.activate_account,
+    name="activate",
+),
 ]
