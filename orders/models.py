@@ -15,7 +15,14 @@ class Order(models.Model):
 
     PAYMENT_CHOICES = [
         ("cod", "Cash on Delivery"),
-        ("card", "Card Payment - Demo"),
+        ("card", "Stripe Card Payment"),
+    ]
+
+    PAYMENT_STATUS_CHOICES = [
+        ("unpaid", "Unpaid"),
+        ("paid", "Paid"),
+        ("failed", "Failed"),
+        ("refunded", "Refunded"),
     ]
 
     user = models.ForeignKey(
@@ -37,6 +44,30 @@ class Order(models.Model):
         default="cod",
     )
 
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PAYMENT_STATUS_CHOICES,
+        default="unpaid",
+    )
+
+    stripe_session_id = models.CharField(
+        max_length=255,
+        unique=True,
+        null=True,
+        blank=True,
+    )
+
+    stripe_payment_intent_id = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+
+    paid_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -44,13 +75,18 @@ class Order(models.Model):
     )
 
     total_price = models.DecimalField(
-        max_digits=12,
-        decimal_places=2,
-        default=0,
+    max_digits=12,
+    decimal_places=2,
+    default=0,
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -72,8 +108,15 @@ class OrderItem(models.Model):
         on_delete=models.PROTECT,
     )
 
-    product_name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    product_name = models.CharField(
+        max_length=200
+    )
+
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+    )
+
     quantity = models.PositiveIntegerField()
 
     def get_total_price(self):

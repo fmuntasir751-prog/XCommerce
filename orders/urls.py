@@ -22,4 +22,20 @@ urlpatterns = [
         views.order_history,
         name="order_history",
     ),
+    path(
+    "payment/success/<int:order_id>/",
+    views.payment_success,
+    name="payment_success",
+),
+
+path(
+    "payment/cancel/<int:order_id>/",
+    views.payment_cancel,
+    name="payment_cancel",
+),
+path(
+    "stripe/webhook/",
+    views.stripe_webhook,
+    name="stripe_webhook",
+),
 ]

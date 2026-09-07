@@ -8,6 +8,32 @@
 
     {% if orders %}
         {% for order in orders %}
+        <p class="mb-1">
+    <strong>Payment:</strong>
+
+    {% if order.payment_status == "paid" %}
+        <span class="badge bg-success">
+            Paid
+        </span>
+    {% elif order.payment_status == "failed" %}
+        <span class="badge bg-danger">
+            Failed
+        </span>
+    {% elif order.payment_status == "refunded" %}
+        <span class="badge bg-info text-dark">
+            Refunded
+        </span>
+    {% else %}
+        <span class="badge bg-warning text-dark">
+            Unpaid
+        </span>
+    {% endif %}
+</p>
+
+<p class="mb-1">
+    <strong>Method:</strong>
+    {{ order.get_payment_method_display }}
+</p>
             <div class="order-history-card">
                 <div class="d-flex justify-content-between flex-wrap">
                     <div>
