@@ -74,3 +74,88 @@ XCommerce/
 ├── manage.py
 ├── requirements.txt
 └── README.md
+# XCommerce
+
+XCommerce is a full-stack e-commerce web application built with Django.  
+It provides product browsing, authentication, cart, wishlist, checkout,
+Stripe test payments, order management, and an admin dashboard.
+
+## Live Website
+
+https://xcommerce.onrender.com
+
+## Features
+
+- User registration and email activation
+- Login, logout, password reset, and profile management
+- Product categories, search, filtering, and featured products
+- Product details, stock management, discounts, and reviews
+- Session-based shopping cart
+- User wishlist
+- Checkout and order history
+- Cash on Delivery and Stripe test payments
+- Payment status and order status management
+- Django administration dashboard
+- Persistent PostgreSQL database
+- Cloudinary product and profile image storage
+- Responsive Bootstrap interface
+- Automated Django tests
+
+## Technology Stack
+
+### Backend
+
+- Python
+- Django 6.1
+- PostgreSQL
+- SQLite for local development
+
+### Frontend
+
+- HTML5
+- CSS3
+- Bootstrap 5
+- JavaScript
+
+### Services
+
+- Stripe Checkout
+- Cloudinary
+- Render
+- GitHub
+
+## Local Installation
+
+```bash
+git clone https://github.com/fmuntasir751-prog/XCommerce.git
+cd XCommerce
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+http://127.0.0.1:8000/
+DJANGO_SECRET_KEY
+DJANGO_DEBUG
+DJANGO_ALLOWED_HOSTS
+DATABASE_URL
+
+STRIPE_PUBLISHABLE_KEY
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+
+CLOUDINARY_CLOUD_NAME
+CLOUDINARY_API_KEY
+CLOUDINARY_API_SECRET
+python manage.py test
+Card number: 4242 4242 4242 4242
+Expiry: Any future date
+CVC: Any three digits
+
+তারপর:
+
+```powershell
+git add README.md
+git commit -m "Add professional project README"
+git push
