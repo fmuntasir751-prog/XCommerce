@@ -648,3 +648,200 @@ body {
     color: #f59e0b;
     font-size: 1.1rem;
 }
+/* =========================
+   Theme Toggle
+========================= */
+
+.theme-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+    font-size: 1.15rem;
+    margin-right: 0.5rem;
+    min-width: 44px;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffb000;
+    color: #ffffff;
+}
+
+
+/* =========================
+   Dark Mode
+========================= */
+
+html {
+    color-scheme: light;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+body {
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+html[data-theme="dark"] body {
+    background-color: #0b1220;
+    color: #e5e7eb;
+}
+
+html[data-theme="dark"] main {
+    background-color: #0b1220;
+}
+
+html[data-theme="dark"] section:not(.hero-section) {
+    background-color: #0b1220;
+    color: #e5e7eb;
+}
+
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6 {
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] p {
+    color: #d1d5db;
+}
+
+html[data-theme="dark"] .text-secondary,
+html[data-theme="dark"] .text-muted {
+    color: #aeb8c7 !important;
+}
+
+
+/* Cards */
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .product-card,
+html[data-theme="dark"] .category-card,
+html[data-theme="dark"] .profile-card,
+html[data-theme="dark"] .checkout-card,
+html[data-theme="dark"] .order-card,
+html[data-theme="dark"] .cart-card {
+    background-color: #111c2e;
+    border-color: #26364d;
+    color: #e5e7eb;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Forms */
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] textarea {
+    background-color: #0f1a2b;
+    border-color: #34445d;
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .form-control::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: #94a3b8;
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus,
+html[data-theme="dark"] textarea:focus {
+    background-color: #111c2e;
+    border-color: #ffb000;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.2rem rgba(255, 176, 0, 0.2);
+}
+
+html[data-theme="dark"] .form-text {
+    color: #9ca3af;
+}
+
+
+/* Tables and lists */
+
+html[data-theme="dark"] .table {
+    --bs-table-bg: #111c2e;
+    --bs-table-color: #e5e7eb;
+    --bs-table-border-color: #34445d;
+}
+
+html[data-theme="dark"] .list-group-item {
+    background-color: #111c2e;
+    border-color: #34445d;
+    color: #e5e7eb;
+}
+
+
+/* Dropdowns and pagination */
+
+html[data-theme="dark"] .dropdown-menu {
+    background-color: #111c2e;
+    border-color: #34445d;
+}
+
+html[data-theme="dark"] .dropdown-item {
+    color: #e5e7eb;
+}
+
+html[data-theme="dark"] .dropdown-item:hover {
+    background-color: #1e2d43;
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .page-link {
+    background-color: #111c2e;
+    border-color: #34445d;
+    color: #ffb000;
+}
+
+
+/* Links and borders */
+
+html[data-theme="dark"] a:not(.btn):not(.navbar-brand) {
+    color: #ffc247;
+}
+
+html[data-theme="dark"] hr,
+html[data-theme="dark"] .border,
+html[data-theme="dark"] .border-bottom,
+html[data-theme="dark"] .border-top {
+    border-color: #34445d !important;
+}
+
+
+/* Footer */
+
+html[data-theme="dark"] .footer {
+    background-color: #07101d;
+    border-top: 1px solid #26364d;
+    color: #d1d5db;
+}
+
+
+/* Alerts */
+
+html[data-theme="dark"] .alert-warning {
+    background-color: #3a2b08;
+    border-color: #7c5b0b;
+    color: #ffe29a;
+}
+
+html[data-theme="dark"] .alert-success {
+    background-color: #0d3526;
+    border-color: #166747;
+    color: #a7f3d0;
+}
+
+html[data-theme="dark"] .alert-danger {
+    background-color: #3b1318;
+    border-color: #7f1d2d;
+    color: #fecdd3;
+}
