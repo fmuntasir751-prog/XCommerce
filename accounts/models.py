@@ -27,8 +27,9 @@ class Profile(models.Model):
 
     address = models.TextField(blank=True)
 
-    avatar = models.ImageField(
-        upload_to="profiles/",
+    avatar = CloudinaryField(
+        "Avatar",
+        folder="xcommerce/profiles",
         blank=True,
         null=True,
     )

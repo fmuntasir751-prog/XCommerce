@@ -5,12 +5,17 @@ import dj_database_url
 import cloudinary
 
 cloudinary.config(
-    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.environ.get("CLOUDINARY_API_KEY"),
-    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    cloud_name=os.environ.get(
+        "CLOUDINARY_CLOUD_NAME", ""
+    ).strip(),
+    api_key=os.environ.get(
+        "CLOUDINARY_API_KEY", ""
+    ).strip(),
+    api_secret=os.environ.get(
+        "CLOUDINARY_API_SECRET", ""
+    ).strip(),
     secure=True,
 )
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
