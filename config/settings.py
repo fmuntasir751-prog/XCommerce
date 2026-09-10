@@ -342,3 +342,19 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = (
 )
 
 SECURE_HSTS_PRELOAD = not DEBUG
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
