@@ -1,21 +1,9 @@
 import os
 from pathlib import Path
 
-import dj_database_url
 import cloudinary
+import dj_database_url
 
-cloudinary.config(
-    cloud_name=os.environ.get(
-        "CLOUDINARY_CLOUD_NAME", ""
-    ).strip(),
-    api_key=os.environ.get(
-        "CLOUDINARY_API_KEY", ""
-    ).strip(),
-    api_secret=os.environ.get(
-        "CLOUDINARY_API_SECRET", ""
-    ).strip(),
-    secure=True,
-)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,6 +44,24 @@ if (
     )
 
 
+# Cloudinary
+cloudinary.config(
+    cloud_name=os.environ.get(
+        "CLOUDINARY_CLOUD_NAME",
+        "",
+    ).strip(),
+    api_key=os.environ.get(
+        "CLOUDINARY_API_KEY",
+        "",
+    ).strip(),
+    api_secret=os.environ.get(
+        "CLOUDINARY_API_SECRET",
+        "",
+    ).strip(),
+    secure=True,
+)
+
+
 # Applications
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -65,8 +71,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # XCommerce apps
+    # Third-party apps
     "cloudinary",
+    "anymail",
+
+    # XCommerce apps
     "core",
     "accounts",
     "products",
@@ -80,10 +89,7 @@ INSTALLED_APPS = [
 # Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-
-    # Production static files
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -133,7 +139,9 @@ TEMPLATES = [
 
 
 # Database
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL"
+)
 
 if DATABASE_URL:
     DATABASES = {
@@ -214,7 +222,6 @@ STORAGES = {
             "FileSystemStorage"
         ),
     },
-
     "staticfiles": {
         "BACKEND": (
             "whitenoise.storage."
@@ -226,6 +233,8 @@ STORAGES = {
         ),
     },
 }
+
+
 # Uploaded media
 MEDIA_URL = "/media/"
 
@@ -244,7 +253,14 @@ LOGOUT_REDIRECT_URL = "core:home"
 CART_SESSION_ID = "cart"
 
 
-# Email
+# Email using Resend API
+ANYMAIL = {
+    "RESEND_API_KEY": os.environ.get(
+        "RESEND_API_KEY",
+        "",
+    ).strip(),
+}
+
 if DEBUG:
     MAILERS = {
         "default": {
@@ -258,55 +274,35 @@ else:
     MAILERS = {
         "default": {
             "BACKEND": (
-                "django.core.mail.backends."
-                "smtp.EmailBackend"
+                "anymail.backends.resend."
+                "EmailBackend"
             ),
-            "OPTIONS": {
-                "host": os.environ.get(
-                    "DJANGO_EMAIL_HOST",
-                    "smtp.gmail.com",
-                ),
-                "port": int(
-                    os.environ.get(
-                        "DJANGO_EMAIL_PORT",
-                        "587",
-                    )
-                ),
-                "username": os.environ.get(
-                    "DJANGO_EMAIL_USER",
-                    "",
-                ),
-                "password": os.environ.get(
-                    "DJANGO_EMAIL_PASSWORD",
-                    "",
-                ),
-                "use_tls": True,
-                "timeout": 10,
-            },
         },
     }
 
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DJANGO_DEFAULT_FROM_EMAIL",
-    "XCommerce <noreply@example.com>",
+    "XCommerce <onboarding@resend.dev>",
 )
+
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 
 # Stripe
 STRIPE_PUBLISHABLE_KEY = os.environ.get(
     "STRIPE_PUBLISHABLE_KEY",
     "",
-)
+).strip()
 
 STRIPE_SECRET_KEY = os.environ.get(
     "STRIPE_SECRET_KEY",
     "",
-)
+).strip()
 
 STRIPE_WEBHOOK_SECRET = os.environ.get(
     "STRIPE_WEBHOOK_SECRET",
     "",
-)
+).strip()
 
 
 # Trusted origins
@@ -347,6 +343,9 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = (
 )
 
 SECURE_HSTS_PRELOAD = not DEBUG
+
+
+# Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -363,3 +362,8 @@ LOGGING = {
         },
     },
 }
+
+
+DEFAULT_AUTO_FIELD = (
+    "django.db.models.BigAutoField"
+)
