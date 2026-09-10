@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
-
+from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -45,8 +45,9 @@ class Product(models.Model):
         null=True,
     )
 
-    image = models.ImageField(
-        upload_to="products/",
+    image = CloudinaryField(
+        "Image",
+         folder="xcommerce/products",
         blank=True,
         null=True,
     )
